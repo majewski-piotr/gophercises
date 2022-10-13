@@ -29,5 +29,4 @@ func (cs *consoleRunner) run() {
 			cs.q.correctAnswers++
 		}
 	}
-	fmt.Println(cs.q.getResult())
 }

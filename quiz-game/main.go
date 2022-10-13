@@ -24,7 +24,6 @@ func main() {
 }
 
 func timer(timeout int, ch chan bool) {
-	fmt.Println(timeout)
 	time.Sleep(time.Second * time.Duration(timeout))
 	fmt.Println("Time out !")
 	ch <- true
