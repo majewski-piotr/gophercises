@@ -8,16 +8,18 @@ import (
 
 func main() {
 	timeout := flag.Int("timeout", 30, "Timeout in seconds")
+	filename := flag.String("csv", "problems.csv", "Path to CSV file")
 	flag.Parse()
-	args := flag.Args()
 
-	rc := loadRecords(args[0])
+	rc := loadRecords(*filename)
 	q := newQuiz(rc)
 	cs := consoleRunner{q: q}
+
 	timeoutChannnel := make(chan bool)
 	go runAgainstTimer(&cs, timeoutChannnel)
 	go timer(*timeout, timeoutChannnel)
 	<-timeoutChannnel
+
 	fmt.Println(cs.q.getResult())
 }
 
