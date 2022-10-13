@@ -15,20 +15,7 @@ func main() {
 	q := newQuiz(rc)
 	cs := consoleRunner{q: q}
 
-	timeoutChannnel := make(chan bool)
-	go runAgainstTimer(&cs, timeoutChannnel)
-	go timer(*timeout, timeoutChannnel)
-	<-timeoutChannnel
-
+	timer := time.NewTimer(time.Duration(*timeout) * time.Second)
+	cs.runWithTimer(timer)
 	fmt.Println(cs.q.getResult())
-}
-
-func timer(timeout int, ch chan bool) {
-	time.Sleep(time.Second * time.Duration(timeout))
-	fmt.Println("Time out !")
-	ch <- true
-}
-func runAgainstTimer(cs *consoleRunner, ch chan bool) {
-	cs.run()
-	ch <- true
 }
