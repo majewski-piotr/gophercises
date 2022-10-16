@@ -1,12 +1,15 @@
 package main
 
 import (
+	"database/sql"
 	"flag"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
-
 	"url-shortener/urlshort"
+
+	_ "github.com/jackc/pgx/v4/stdlib"
 )
 
 func main() {
@@ -14,6 +17,8 @@ func main() {
 	yamlPath := flag.String("yaml", "redirects.yaml", "path of the yaml file with redirects")
 	jsonPath := flag.String("json", "redirects.json", "path of the json file with redirects")
 	flag.Parse()
+
+	getConnectionPostgres()
 
 	mux := defaultMux()
 
@@ -42,12 +47,17 @@ func main() {
 
 	//Bonus2
 	jsonHandler, err := urlshort.JSONHandler(jsonBytes, yamlHandler)
+	_ = jsonHandler
+
+	//Bonus3
+	postgresConnection, err := getConnectionPostgres()
+	postgresHandler, err := urlshort.PostgresHandler(postgresConnection, mapHandler)
 
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println("Starting the server on :8082")
-	http.ListenAndServe(":8082", jsonHandler)
+	http.ListenAndServe(":8082", postgresHandler)
 }
 
 func defaultMux() *http.ServeMux {
@@ -58,4 +68,21 @@ func defaultMux() *http.ServeMux {
 
 func hello(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "Hello, world!")
+}
+
+func getConnectionPostgres() (*sql.DB, error) {
+	host := "localhost"
+	port := "5432"
+	user := "postgres"
+	password := "notBestPracticeToPutItHere"
+	dbname := "redirects"
+	psqlConnectionString := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+		host, port, user, password, dbname)
+
+	result, err := sql.Open("pgx", psqlConnectionString)
+	err = result.Ping()
+	if err != nil {
+		log.Fatalf("Error connecting to db : %s", err)
+	}
+	return result, err
 }

@@ -1,6 +1,7 @@
 package urlshort
 
 import (
+	"database/sql"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -65,6 +66,32 @@ func JSONHandler(jsonData []byte, fallback http.Handler) (http.HandlerFunc, erro
 
 	return handleRedirectData(redirectData, fallback), err
 
+}
+
+func PostgresHandler(db *sql.DB, fallback http.Handler) (http.HandlerFunc, error) {
+	redirectData, err := getRedirectPairs(db)
+
+	return handleRedirectData(redirectData, fallback), err
+
+}
+
+func getRedirectPairs(db *sql.DB) ([]RedirectPair, error) {
+	rows, err := db.Query("SELECT path, url FROM paths")
+	if err != nil {
+		log.Fatalf("could not execute query: %v", err)
+	}
+
+	redirectPairs := []RedirectPair{}
+
+	for rows.Next() {
+		redirectPair := RedirectPair{}
+		if err := rows.Scan(&redirectPair.Path, &redirectPair.Url); err != nil {
+			log.Fatalf("could not scan row: %v", err)
+		}
+		redirectPairs = append(redirectPairs, redirectPair)
+	}
+
+	return redirectPairs, err
 }
 
 type RedirectPair struct {
