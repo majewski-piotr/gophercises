@@ -1,3 +1,4 @@
+// Package main builds executable to parse links
 package main
 
 import (

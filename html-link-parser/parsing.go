@@ -1,3 +1,4 @@
+// Package html-link-parser implemets tools to parse links from html pages
 package hlp
 
 import (
@@ -12,6 +13,9 @@ type Link struct {
 	Text string
 }
 
+// Traverses html.Node recursively and returns slice of links
+// Links are discovereds by node.Data == "a"
+// and all nested text inside them goes to Link.Text field
 func GetLinks(root *html.Node) []Link {
 	links := []Link{}
 	if root == nil {
