@@ -1,3 +1,4 @@
+// Package implements running quiz
 package quiz
 
 import "fmt"
