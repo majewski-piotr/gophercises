@@ -53,7 +53,7 @@ func TestGetNestedText(t *testing.T) {
 	expected := "Gophercises is onGithub!"
 	actual := getNestedText(doc.FirstChild.FirstChild.NextSibling.NextSibling.
 		FirstChild.NextSibling.NextSibling.NextSibling.FirstChild.NextSibling.
-		NextSibling.NextSibling.FirstChild)
+		NextSibling.NextSibling)
 
 	if actual != expected {
 		t.Errorf("Strings does't match got: \n%s \nEXPECTED\n%s", actual, expected)
