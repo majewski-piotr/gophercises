@@ -1,4 +1,4 @@
-package main
+package quiz
 
 type question struct {
 	text   string

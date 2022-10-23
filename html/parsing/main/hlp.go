@@ -3,13 +3,11 @@ package main
 
 import (
 	"fmt"
-
+	"gophercises/html/parsing/link"
 	"log"
 	"os"
 
-	hlp "gophercises/html-link-parser"
-
-	"golang.org/x/net/html"
+	h "golang.org/x/net/html"
 )
 
 func main() {
@@ -18,12 +16,12 @@ func main() {
 		log.Fatal("Cannot open file")
 	}
 
-	doc, err := html.Parse(f)
+	doc, err := h.Parse(f)
 	if err != nil {
 		log.Fatal("Cannot open file")
 	}
 
-	for _, l := range hlp.GetLinks(doc) {
+	for _, l := range link.GetLinks(doc) {
 		fmt.Println(l)
 	}
 

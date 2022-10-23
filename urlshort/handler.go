@@ -68,6 +68,10 @@ func JSONHandler(jsonData []byte, fallback http.Handler) (http.HandlerFunc, erro
 
 }
 
+// Handler for db connection, schemat need table Paths
+// with columns path * url related to redirects
+// if path is not found then the
+// fallback http.Handler will be called instead
 func PostgresHandler(db *sql.DB, fallback http.Handler) (http.HandlerFunc, error) {
 	redirectData, err := getRedirectPairs(db)
 

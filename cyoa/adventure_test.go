@@ -1,4 +1,4 @@
-package adventure
+package cyoa
 
 import (
 	"encoding/json"

@@ -1,4 +1,4 @@
-package hlp
+package link
 
 import (
 	"strings"
@@ -61,7 +61,6 @@ func TestGetNestedText(t *testing.T) {
 	if getNestedText(nil) != "" {
 		t.Errorf("Incorrect result after nil value")
 	}
-
 }
 
 func TestGetLinks(t *testing.T) {

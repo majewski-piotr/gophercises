@@ -1,4 +1,4 @@
-package main
+package quiz
 
 import "fmt"
 
@@ -7,7 +7,7 @@ type quiz struct {
 	correctAnswers int
 }
 
-func newQuiz(csvRecords [][]string) quiz {
+func New(csvRecords [][]string) quiz {
 	q := quiz{}
 	for _, r := range csvRecords {
 		qst := question{r[0], r[1]}
@@ -16,7 +16,7 @@ func newQuiz(csvRecords [][]string) quiz {
 	return q
 }
 
-func (q quiz) getResult() string {
+func (q quiz) GetResult() string {
 	return fmt.Sprintf("You answered correctly %d out of %d questions",
 		q.correctAnswers, len(q.questions))
 }

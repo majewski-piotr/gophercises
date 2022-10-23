@@ -1,5 +1,5 @@
-// Package html-link-parser implemets tools to parse links from html pages
-package hlp
+// Package link implemets tools to parse links from html pages
+package link
 
 import (
 	"gophercises/utils/slices"

@@ -1,5 +1,5 @@
 // Package implementig 'choose your own adventure' game type
-package adventure
+package cyoa
 
 import (
 	"fmt"

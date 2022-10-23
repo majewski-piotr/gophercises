@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"gophercises/quiz"
 	"time"
 )
 
@@ -11,11 +12,11 @@ func main() {
 	filename := flag.String("csv", "problems.csv", "Path to CSV file")
 	flag.Parse()
 
-	rc := loadRecords(*filename)
-	q := newQuiz(rc)
-	cs := consoleRunner{q: q}
+	rc := quiz.LoadRecords(*filename)
+	q := quiz.New(rc)
+	cs := quiz.ConsoleRunner{Q: q}
 
 	timer := time.NewTimer(time.Duration(*timeout) * time.Second)
-	cs.runWithTimer(timer)
-	fmt.Println(cs.q.getResult())
+	cs.RunWithTimer(timer)
+	fmt.Println(cs.Q.GetResult())
 }

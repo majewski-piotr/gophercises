@@ -1,4 +1,4 @@
-package main
+package quiz
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 )
 
 func TestNewQuiz(t *testing.T) {
-	q := newQuiz(getTestRecords())
+	q := New(getTestRecords())
 
 	if q.questions[0].text != "1+1" {
 		t.Errorf("Incorrect first question, should be 1+1, is %v", q.questions[0].text)
@@ -21,7 +21,7 @@ func TestNewQuiz(t *testing.T) {
 }
 
 func TestStringQuiz(t *testing.T) {
-	q := newQuiz(getTestRecords())
+	q := New(getTestRecords())
 	result := q.String()
 	expected := "Question: 1+1, Answer: 2\nQuestion: 2+2, Answer: 4\nQuestion: 4+2, Answer: 6"
 	if strings.EqualFold(result, expected) {
@@ -30,10 +30,10 @@ func TestStringQuiz(t *testing.T) {
 }
 
 func TestGetResult(t *testing.T) {
-	q := newQuiz(getTestRecords())
+	q := New(getTestRecords())
 	q.correctAnswers = 2
 
-	result := q.getResult()
+	result := q.GetResult()
 	expected := fmt.Sprintf("You answered correctly 2 out of %d", len(q.questions))
 
 	if strings.EqualFold(result, expected) {

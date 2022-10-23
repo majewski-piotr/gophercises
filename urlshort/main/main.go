@@ -4,12 +4,10 @@ import (
 	"database/sql"
 	"flag"
 	"fmt"
+	"gophercises/urlshort"
 	"log"
 	"net/http"
 	"os"
-	"url-shortener/urlshort"
-
-	_ "github.com/jackc/pgx/v4/stdlib"
 )
 
 func main() {

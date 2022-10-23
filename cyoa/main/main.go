@@ -1,10 +1,10 @@
 package main
 
 import (
-	"adventure"
 	"encoding/json"
 	"flag"
 	"fmt"
+	"gophercises/cyoa"
 	ht "html/template"
 	"log"
 	"net/http"
@@ -22,7 +22,7 @@ func main() {
 	if jsonErr != nil {
 		panic(jsonErr)
 	}
-	var am map[string]adventure.Adventure
+	var am map[string]cyoa.Adventure
 	json.Unmarshal(jsonBytes, &am)
 
 	switch *typePtr {
@@ -35,13 +35,13 @@ func main() {
 	}
 
 }
-func runCli(templatePtr *string, am map[string]adventure.Adventure) {
+func runCli(templatePtr *string, am map[string]cyoa.Adventure) {
 	tpl, tplErr := tt.ParseFiles(*templatePtr)
 	if tplErr != nil {
 		panic(tplErr)
 	}
 
-	ah := adventure.AdventureHandler{
+	ah := cyoa.AdventureHandler{
 		AM:       am,
 		Template: tpl,
 	}
@@ -49,13 +49,13 @@ func runCli(templatePtr *string, am map[string]adventure.Adventure) {
 	ah.RunCli()
 }
 
-func runWeb(templatePtr *string, am map[string]adventure.Adventure) {
+func runWeb(templatePtr *string, am map[string]cyoa.Adventure) {
 	tpl, tplErr := ht.ParseFiles(*templatePtr)
 	if tplErr != nil {
 		panic(tplErr)
 	}
 
-	ah := adventure.AdventureHandler{
+	ah := cyoa.AdventureHandler{
 		AM:       am,
 		Template: tpl,
 	}
