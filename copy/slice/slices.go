@@ -1,4 +1,4 @@
-package slices
+package slice
 
 func ConcatCopyPreAllocate[T interface{}](slices ...[]T) []T {
 	var totalLen int
