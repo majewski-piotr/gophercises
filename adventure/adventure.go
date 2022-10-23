@@ -1,3 +1,4 @@
+// Package implementig 'choose your own adventure' game type
 package adventure
 
 import (
@@ -7,17 +8,22 @@ import (
 	"os"
 )
 
+// Represents single scene
 type Adventure struct {
 	Title   string   `json:"title"`
 	Story   []string `json:"story"`
 	Options []Option `json:"options"`
 }
 
+// Represents options from scene
 type Option struct {
 	Text string `json:"text"`
 	Arc  string `json:"arc"`
 }
 
+// Represents map of scenes forming a full story
+// Holds reference to template used to present
+// Adventures to players
 type AdventureHandler struct {
 	AM       map[string]Adventure
 	Template Executable
