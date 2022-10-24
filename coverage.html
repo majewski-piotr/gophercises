@@ -1,0 +1,381 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>cyoa: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">gophercises/cyoa/adventure.go (0.0%)</option>
+				
+				<option value="file1">gophercises/html/parsing/link/parsing.go (94.4%)</option>
+				
+				<option value="file2">gophercises/quiz/consoleRunner.go (0.0%)</option>
+				
+				<option value="file3">gophercises/quiz/question.go (100.0%)</option>
+				
+				<option value="file4">gophercises/quiz/quiz.go (100.0%)</option>
+				
+				<option value="file5">gophercises/sitemap/sitemap.go (75.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">// Package implementig 'choose your own adventure' game type
+package cyoa
+
+import (
+        "fmt"
+        "io"
+        "net/http"
+        "os"
+)
+
+// Represents single scene
+type Adventure struct {
+        Title   string   `json:"title"`
+        Story   []string `json:"story"`
+        Options []Option `json:"options"`
+}
+
+// Represents options from scene
+type Option struct {
+        Text string `json:"text"`
+        Arc  string `json:"arc"`
+}
+
+// Represents map of scenes forming a full story
+// Holds reference to template used to present
+// Adventures to players
+type AdventureHandler struct {
+        AM       map[string]Adventure
+        Template Executable
+}
+
+// interface to match both http and text template
+type Executable interface {
+        Execute(wr io.Writer, data any) error
+}
+
+// Handles requests from html pages generated from
+// adventures structs. Trims backslash from path to
+// mach keys in a given map
+func (ah AdventureHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) <span class="cov0" title="0">{
+        path := r.URL.Path[1:]
+        ah.Template.Execute(rw, ah.AM[path])
+}</span>
+
+// Runs adventures through cli, outputs through os.Strout,
+// reads input from the console via fmt.Scanln
+func (ah AdventureHandler) RunCli() <span class="cov0" title="0">{
+        scene := "intro"
+        for </span><span class="cov0" title="0">{
+                a := ah.AM[scene]
+                ah.Template.Execute(os.Stdout, a)
+
+                if len(a.Options) == 0 </span><span class="cov0" title="0">{
+                        os.Exit(0)
+                }</span>
+
+                <span class="cov0" title="0">var optionNumber int
+                fmt.Scanln(&amp;optionNumber)
+                if optionNumber &gt;= 0 &amp;&amp; optionNumber &lt; len(a.Options) </span><span class="cov0" title="0">{
+                        scene = a.Options[optionNumber].Arc
+                }</span> else<span class="cov0" title="0"> {
+                        fmt.Printf("Option %v is invalid, repeating scene\n", optionNumber)
+                }</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">// Package link implemets tools to parse links from html pages
+package link
+
+import (
+        "gophercises/copy/slice"
+        "strings"
+
+        "golang.org/x/net/html"
+)
+
+type Link struct {
+        Url  string
+        Text string
+}
+
+// Traverses html.Node recursively and returns slice of links
+// Links are discovereds by node.Data == "a"
+// and all nested text inside them goes to Link.Text field
+func GetLinks(n *html.Node) []Link <span class="cov8" title="1">{
+        links := []Link{}
+        if n == nil </span><span class="cov0" title="0">{
+                return links
+        }</span>
+
+        <span class="cov8" title="1">for n = n.FirstChild; n != nil; n = n.NextSibling </span><span class="cov8" title="1">{
+                if isLink(n) </span><span class="cov8" title="1">{
+                        l := Link{
+                                Url:  n.Attr[0].Val,
+                                Text: getNestedText(n),
+                        }
+                        links = append(links, l)
+                }</span> else<span class="cov8" title="1"> {
+                        links = slice.ConcatCopyPreAllocate(links, GetLinks(n))
+                }</span>
+        }
+        <span class="cov8" title="1">return links</span>
+}
+
+func isLink(n *html.Node) bool <span class="cov8" title="1">{
+        return n != nil &amp;&amp; n.Type == html.ElementNode &amp;&amp; n.Data == "a"
+}</span>
+
+// returns concatenated text from childrens of
+// a given node, recursively, adds one space between
+func getNestedText(n *html.Node) string <span class="cov8" title="1">{
+        var sb string
+        if n == nil </span><span class="cov8" title="1">{
+                return ""
+        }</span>
+
+        <span class="cov8" title="1">for n = n.FirstChild; n != nil; n = n.NextSibling </span><span class="cov8" title="1">{
+                if n.Type == html.TextNode &amp;&amp; len(strings.TrimSpace(n.Data)) &gt; 0 </span><span class="cov8" title="1">{
+                        sb += strings.TrimSpace(n.Data)
+                }</span>
+                <span class="cov8" title="1">sb += getNestedText(n)</span>
+        }
+        <span class="cov8" title="1">return sb</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package quiz
+
+import (
+        "encoding/csv"
+        "fmt"
+        "log"
+        "os"
+        "time"
+)
+
+type ConsoleRunner struct {
+        Q quiz
+}
+
+func LoadRecords(filename string) [][]string <span class="cov0" title="0">{
+        file, err := os.Open(filename)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Fatal(err)
+        }</span>
+        <span class="cov0" title="0">reader := csv.NewReader(file)
+        records, _ := reader.ReadAll()
+        return records</span>
+}
+
+func (cs *ConsoleRunner) Run() <span class="cov0" title="0">{
+        for _, q := range cs.Q.questions </span><span class="cov0" title="0">{
+                var input string
+                fmt.Println("Question:", q.text)
+                fmt.Scanln(&amp;input)
+                if q.check(input) </span><span class="cov0" title="0">{
+                        cs.Q.correctAnswers++
+                }</span>
+        }
+}
+
+func (cs *ConsoleRunner) RunWithTimer(timer *time.Timer) <span class="cov0" title="0">{
+        for _, q := range cs.Q.questions </span><span class="cov0" title="0">{
+                fmt.Println("Question:", q.text)
+
+                answerChan := make(chan bool)
+                go func() </span><span class="cov0" title="0">{
+                        var input string
+                        fmt.Scanln(&amp;input)
+                        answerChan &lt;- q.check(input)
+                }</span>()
+
+                <span class="cov0" title="0">select </span>{
+                case &lt;-timer.C:<span class="cov0" title="0">
+                        fmt.Println("Time's up!")
+                        return</span>
+                case answer := &lt;-answerChan:<span class="cov0" title="0">
+                        if answer </span><span class="cov0" title="0">{
+                                cs.Q.correctAnswers++
+                        }</span>
+                }
+        }
+}
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package quiz
+
+type question struct {
+        text   string
+        answer string
+}
+
+func (q question) check(answer string) bool <span class="cov8" title="1">{
+        return answer == q.answer
+}</span>
+
+func (q question) String() string <span class="cov8" title="1">{
+        return "Question: " + q.text + ", Answer: " + q.answer
+}</span>
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">// Package implements running quiz
+package quiz
+
+import "fmt"
+
+type quiz struct {
+        questions      []question
+        correctAnswers int
+}
+
+func New(csvRecords [][]string) quiz <span class="cov8" title="1">{
+        q := quiz{}
+        for _, r := range csvRecords </span><span class="cov8" title="1">{
+                qst := question{r[0], r[1]}
+                q.questions = append(q.questions, qst)
+        }</span>
+        <span class="cov8" title="1">return q</span>
+}
+
+func (q quiz) GetResult() string <span class="cov8" title="1">{
+        return fmt.Sprintf("You answered correctly %d out of %d questions",
+                q.correctAnswers, len(q.questions))
+}</span>
+
+func (q quiz) String() string <span class="cov8" title="1">{
+        result := ""
+        for _, v := range q.questions </span><span class="cov8" title="1">{
+                result += v.String() + "\n"
+        }</span>
+        <span class="cov8" title="1">return result</span>
+}
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">// Package for building map of sites from single domain
+package sitemap
+
+import (
+        "gophercises/html/parsing/link"
+        "log"
+        "net/url"
+        "strings"
+)
+
+// type representing whole domain
+type Domain struct {
+        Name  string
+        Sites []link.Link
+}
+
+// checks if given string is from the domain
+func (d Domain) contains(s string) bool <span class="cov8" title="1">{
+
+        if strings.HasPrefix(s, "/") </span><span class="cov8" title="1">{
+                return true
+        }</span>
+
+        <span class="cov8" title="1">url, err := url.Parse(s)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Printf("during parsing url of %v occured error:%v", s, err)
+                return false
+        }</span>
+
+        <span class="cov8" title="1">domain := strings.TrimPrefix(url.Hostname(), "www.")
+
+        return d.Name == domain</span>
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>
