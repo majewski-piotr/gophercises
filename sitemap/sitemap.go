@@ -14,7 +14,7 @@ type Domain struct {
 	Sites []link.Link
 }
 
-// cheks if given string is from the domain
+// checks if given string is from the domain
 func (d Domain) contains(s string) bool {
 
 	if strings.HasPrefix(s, "/") {
