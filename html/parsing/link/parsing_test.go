@@ -76,4 +76,7 @@ func TestGetLinks(t *testing.T) {
 	if links[0].Url != "https://www.twitter.com/joncalhoun" {
 		t.Error("Wrong link text, should be got https://www.twitter.com/joncalhoun , got", links[0].Url)
 	}
+	if len(GetLinks(nil)) != 0 {
+		t.Error("Should return empty slice in case of nil")
+	}
 }
