@@ -55,7 +55,7 @@
 			<div id="nav">
 				<select id="files">
 				
-				<option value="file0">gophercises/cyoa/adventure.go (0.0%)</option>
+				<option value="file0">gophercises/cyoa/adventure.go (15.4%)</option>
 				
 				<option value="file1">gophercises/html/parsing/link/parsing.go (100.0%)</option>
 				
@@ -116,7 +116,7 @@ type Executable interface {
 // Handles requests from html pages generated from
 // adventures structs. Trims backslash from path to
 // mach keys in a given map
-func (ah AdventureHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) <span class="cov0" title="0">{
+func (ah AdventureHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) <span class="cov8" title="1">{
         path := r.URL.Path[1:]
         ah.Template.Execute(rw, ah.AM[path])
 }</span>
