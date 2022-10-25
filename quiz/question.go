@@ -1,14 +1,14 @@
 package quiz
 
-type question struct {
-	text   string
-	answer string
+type Question struct {
+	Text   string
+	Answer string
 }
 
-func (q question) check(answer string) bool {
-	return answer == q.answer
+func (q Question) Check(answer string) bool {
+	return answer == q.Answer
 }
 
-func (q question) String() string {
-	return "Question: " + q.text + ", Answer: " + q.answer
+func (q Question) String() string {
+	return "Question: " + q.Text + ", Answer: " + q.Answer
 }

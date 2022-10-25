@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"gophercises/quiz"
+	"gophercises/quiz/runner"
 	"time"
 )
 
@@ -12,9 +13,9 @@ func main() {
 	filename := flag.String("csv", "problems.csv", "Path to CSV file")
 	flag.Parse()
 
-	rc := quiz.LoadRecords(*filename)
+	rc := runner.LoadRecords(*filename)
 	q := quiz.New(rc)
-	cs := quiz.ConsoleRunner{Q: q}
+	cs := runner.ConsoleRunner{Q: q}
 
 	timer := time.NewTimer(time.Duration(*timeout) * time.Second)
 	cs.RunWithTimer(timer)

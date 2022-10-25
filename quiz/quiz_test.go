@@ -9,14 +9,14 @@ import (
 func TestNewQuiz(t *testing.T) {
 	q := New(getTestRecords())
 
-	if q.questions[0].text != "1+1" {
-		t.Errorf("Incorrect first question, should be 1+1, is %v", q.questions[0].text)
+	if q.Questions[0].Text != "1+1" {
+		t.Errorf("Incorrect first question, should be 1+1, is %v", q.Questions[0].Text)
 	}
-	if q.questions[0].answer != "2" {
-		t.Errorf("Incorrect first question, should be 2, is %v", q.questions[0].answer)
+	if q.Questions[0].Answer != "2" {
+		t.Errorf("Incorrect first question, should be 2, is %v", q.Questions[0].Answer)
 	}
-	if len(q.questions) != 3 {
-		t.Errorf("Incorrect number of questions, should be 3, is %v", len(q.questions))
+	if len(q.Questions) != 3 {
+		t.Errorf("Incorrect number of questions, should be 3, is %v", len(q.Questions))
 	}
 }
 
@@ -31,10 +31,10 @@ func TestStringQuiz(t *testing.T) {
 
 func TestGetResult(t *testing.T) {
 	q := New(getTestRecords())
-	q.correctAnswers = 2
+	q.CorrectAnswers = 2
 
 	result := q.GetResult()
-	expected := fmt.Sprintf("You answered correctly 2 out of %d", len(q.questions))
+	expected := fmt.Sprintf("You answered correctly 2 out of %d", len(q.Questions))
 
 	if strings.EqualFold(result, expected) {
 		t.Errorf("Incorrect returned value, should be \n%v, is \n%v", expected, result)

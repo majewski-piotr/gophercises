@@ -1,15 +1,17 @@
-package quiz
+
+package runner
 
 import (
 	"encoding/csv"
 	"fmt"
+	"gophercises/quiz"
 	"log"
 	"os"
 	"time"
 )
 
 type ConsoleRunner struct {
-	Q quiz
+	Q quiz.Quiz
 }
 
 func LoadRecords(filename string) [][]string {
@@ -23,25 +25,25 @@ func LoadRecords(filename string) [][]string {
 }
 
 func (cs *ConsoleRunner) Run() {
-	for _, q := range cs.Q.questions {
+	for _, q := range cs.Q.Questions {
 		var input string
-		fmt.Println("Question:", q.text)
+		fmt.Println("Question:", q.Text)
 		fmt.Scanln(&input)
-		if q.check(input) {
-			cs.Q.correctAnswers++
+		if q.Check(input) {
+			cs.Q.CorrectAnswers++
 		}
 	}
 }
 
 func (cs *ConsoleRunner) RunWithTimer(timer *time.Timer) {
-	for _, q := range cs.Q.questions {
-		fmt.Println("Question:", q.text)
+	for _, q := range cs.Q.Questions {
+		fmt.Println("Question:", q.Text)
 
 		answerChan := make(chan bool)
 		go func() {
 			var input string
 			fmt.Scanln(&input)
-			answerChan <- q.check(input)
+			answerChan <- q.Check(input)
 		}()
 
 		select {
@@ -50,7 +52,7 @@ func (cs *ConsoleRunner) RunWithTimer(timer *time.Timer) {
 			return
 		case answer := <-answerChan:
 			if answer {
-				cs.Q.correctAnswers++
+				cs.Q.CorrectAnswers++
 			}
 		}
 	}
