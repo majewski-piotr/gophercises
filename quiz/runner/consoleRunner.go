@@ -1,4 +1,4 @@
-
+// Package implementing managers that can run quiz
 package runner
 
 import (
