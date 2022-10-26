@@ -46,7 +46,7 @@ func runCli(templatePtr *string, am map[string]cyoa.Adventure) {
 		Template: tpl,
 	}
 
-	ah.RunCli()
+	ah.RunCli(os.Stdin, os.Stdout)
 }
 
 func runWeb(templatePtr *string, am map[string]cyoa.Adventure) {

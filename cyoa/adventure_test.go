@@ -1,6 +1,7 @@
 package cyoa
 
 import (
+	"bytes"
 	"encoding/json"
 	"net/http/httptest"
 	"strings"
@@ -162,10 +163,8 @@ func TestServeHttp(t *testing.T) {
 	//given
 	jsonBytes := []byte(testStory)
 	var am map[string]Adventure
-	err := json.Unmarshal(jsonBytes, &am)
-	if err != nil {
-		t.Error("error decoding desired json into map of  adventures", err)
-	}
+	json.Unmarshal(jsonBytes, &am)
+
 	tplPtr := &tt.Template{}
 	tplPtr.Parse(testTemplate)
 
@@ -184,4 +183,35 @@ func TestServeHttp(t *testing.T) {
 	if expected, actual := intro, rw.Body.String(); strings.EqualFold(expected, actual) {
 		t.Error("Incorrect response :\n", actual)
 	}
+}
+
+func TestRunCli(t *testing.T) {
+	//given
+	jsonBytes := []byte(testStory)
+	var am map[string]Adventure
+	json.Unmarshal(jsonBytes, &am)
+
+	tplPtr := &tt.Template{}
+	tplPtr.Parse(testTemplate)
+
+	ah := AdventureHandler{
+		AM:       am,
+		Template: tplPtr,
+	}
+
+	in := strings.NewReader("1\n1 1 0")
+	var b bytes.Buffer
+	resulBytes := make([]byte, len(intro)*3)
+
+	//when
+	ah.RunCli(in, &b)
+
+	//todo FIX THIS TO TRULY READ ALL
+	b.Read(resulBytes)
+	//then
+	actual := string(resulBytes)
+	if !strings.EqualFold(intro, actual) {
+		t.Errorf("Wrong output, got\nSTART|%v|END\n", actual)
+	}
+
 }

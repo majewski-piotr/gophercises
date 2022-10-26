@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 )
 
 // Represents single scene
@@ -44,22 +43,22 @@ func (ah AdventureHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 // Runs adventures through cli, outputs through os.Strout,
 // reads input from the console via fmt.Scanln
-func (ah AdventureHandler) RunCli() {
+func (ah AdventureHandler) RunCli(in io.Reader, out io.Writer) {
 	scene := "intro"
 	for {
 		a := ah.AM[scene]
-		ah.Template.Execute(os.Stdout, a)
+		ah.Template.Execute(out, a)
 
 		if len(a.Options) == 0 {
-			os.Exit(0)
+			return
 		}
 
-		var optionNumber int
-		fmt.Scanln(&optionNumber)
+		optionNumber := -1
+		fmt.Fscanln(in, &optionNumber)
 		if optionNumber >= 0 && optionNumber < len(a.Options) {
 			scene = a.Options[optionNumber].Arc
 		} else {
-			fmt.Printf("Option %v is invalid, repeating scene\n", optionNumber)
+			fmt.Fprintf(out, "Option %v is invalid, repeating scene\n", optionNumber)
 		}
 	}
 }
