@@ -55,7 +55,7 @@
 			<div id="nav">
 				<select id="files">
 				
-				<option value="file0">gophercises/cyoa/adventure.go (92.3%)</option>
+				<option value="file0">gophercises/cyoa/adventure.go (100.0%)</option>
 				
 				<option value="file1">gophercises/html/parsing/link/parsing.go (100.0%)</option>
 				
@@ -136,7 +136,7 @@ func (ah AdventureHandler) RunCli(in io.Reader, out io.Writer) <span class="cov8
                 fmt.Fscanln(in, &amp;optionNumber)
                 if optionNumber &gt;= 0 &amp;&amp; optionNumber &lt; len(a.Options) </span><span class="cov8" title="1">{
                         scene = a.Options[optionNumber].Arc
-                }</span> else<span class="cov0" title="0"> {
+                }</span> else<span class="cov8" title="1"> {
                         fmt.Fprintf(out, "Option %v is invalid, repeating scene\n", optionNumber)
                 }</span>
         }
