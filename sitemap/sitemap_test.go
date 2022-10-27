@@ -2,6 +2,7 @@ package sitemap
 
 import (
 	"bytes"
+	"gophercises/html/parsing/link"
 	"log"
 	"os"
 	"strings"
@@ -9,28 +10,28 @@ import (
 )
 
 func TestContains(t *testing.T) {
-	d := Domain{Name: "elderscrolls.org", Sites: nil}
+	d := Domain{Name: link.Link{Url: "", Text: "elderscrolls.org"}, Sites: nil}
 
-	if !d.contains("http://www.elderscrolls.org/oblivion") {
+	if !d.belongs(link.Link{Url: "", Text: "http://www.elderscrolls.org/oblivion"}) {
 		t.Error("http://www.elderscrolls.org/oblivion is from domain elderscrolls")
 	}
 
-	if !d.contains("https://www.elderscrolls.org/oblivion") {
+	if !d.belongs(link.Link{Url: "", Text: "https://www.elderscrolls.org/oblivion"}) {
 		t.Error("https://www.elderscrolls.org/oblivion is from domain elderscrolls")
 	}
 
-	if !d.contains("/oblivion") {
+	if !d.belongs(link.Link{Url: "", Text: "/oblivion"}) {
 		t.Error("/oblivion is from domain elderscrolls")
 	}
 
-	if d.contains("http://www.elderscrolls.oblivion/badfaces") {
+	if d.belongs(link.Link{Url: "", Text: "http://www.elderscrolls.oblivion/badfaces"}) {
 		t.Error("http://www.elderscrolls.oblivion/badfaces isn't from domain elderscrolls")
 	}
 }
 
 func TestContainsError(t *testing.T) {
 	//given
-	d := Domain{Name: "elderscrolls.org", Sites: nil}
+	d := Domain{Name: link.Link{Url: "", Text: "elderscrolls.org"}, Sites: nil}
 
 	var buf bytes.Buffer
 	log.SetOutput(&buf)
@@ -39,7 +40,7 @@ func TestContainsError(t *testing.T) {
 	}()
 
 	//when
-	d.contains("HTTascxsvcvsdd?#$%!aax")
+	d.belongs(link.Link{Url: "", Text: "HTTascxsvcvsdd?#$%!aax"})
 	actual := buf.String()[20:]
 
 	//then
